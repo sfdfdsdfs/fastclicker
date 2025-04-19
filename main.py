@@ -1,4 +1,5 @@
 import pygame as pg
+from random import randint
 pg.init()
 
 
@@ -10,58 +11,51 @@ run = True
 
 window = pg.display.set_mode(window_size)
 
-class TextArea():
-  def __init__(self, x=0, y=0, width=10, height=10, color=None):
-      self.rect = pg.Rect(x, y, width, height)
-      self.fill_color = color
-      #возможные надписи
-      self.titles = list()
+class Area():
+    def __init__(self, x, y, width, height, color):
+        self.rect = pg.Rect(x, y, width, height)
+        self.fill_color = color
 
+    def set_color(self, new_color):
+        self.fill_color = new_color
 
-
-  #добавить текст в список возможных надписей
-  def add_text(self, text):
-    self.titles.append(text)
-
-
-  #установить текст
-  def set_text(self, number=0, fsize=30, text_color=BLACK):
-      self.text = self.titles[number]
-      self.image = pg.font.Font(None, fsize).render(self.text, True, text_color)
+    def fill(self):
+        pg.draw.rect(window, self.fill_color, self.rect)
     
-  #отрисовка прямоугольника с текстом
-  def draw(self, shift_x=0, shift_y=0):
-      pg.draw.rect(mw, self.fill_color, self.rect)
-      mw.blit(self.image, (self.rect.x + shift_x, self.rect.y + shift_y))  class TextArea():
-  def __init__(self, x=0, y=0, width=10, height=10, color=None):
-      self.rect = pg.Rect(x, y, width, height)
-      self.fill_color = color
-      #возможные надписи
-      self.titles = list()
+    def set_border(self, color, size):
+        pg.draw.rect(window, color, self.rect, size)
 
 
-
-  #добавить текст в список возможных надписей
-  def add_text(self, text):
-    self.titles.append(text)
-
-
-  #установить текст
-  def set_text(self, number=0, fsize=30, text_color=BLACK):
-      self.text = self.titles[number]
-      self.image = pg.font.Font(None, fsize).render(self.text, True, text_color)
+class Label(Area):
+    def set_text(self, fsize, text_color, text):
+        self.image = pg.font.SysFont('verdana', fsize).render(text, True, text_color)
     
-  #отрисовка прямоугольника с текстом
-  def draw(self, shift_x=0, shift_y=0):
-      pg.draw.rect(mw, self.fill_color, self.rect)
-      mw.blit(self.image, (self.rect.x + shift_x, self.rect.y + shift_y))  
+    def draw(self, shift_x, shift_y):
+        self.fill()
+        self.set_border('black', 3)
+        window.blit(self.image, (self.rect.x + shift_x, self.rect.y + shift_y))
+      
+cards = list()
+
+x = 35
+
+for i in range(4):
+    card = Label(x, 200, 100, 150, 'yellow')
+    card.set_text(20, 'black', 'CLICK')
+    #card.set_border('black', 110)
+    cards.append(card)
+    x += 110
 
 while run:
     for event in pg.event.get():
         if event.type == pg.QUIT:
             run = False
-
+    
     window.fill(back) 
+    
+    for card in cards:
+        card.draw(20, 50)
+
     pg.display.update()
     clock.tick(fps)
 
